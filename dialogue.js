@@ -4,79 +4,30 @@ const dialogCloseBtn = dialogBox.querySelector('.dialog-close-btn');
 const dialogBody = dialogBox.querySelector('.dialog-body');
 const dialogInput = dialogBox.querySelector('#dialog-input');
 const dialogSendBtn = dialogBox.querySelector('#dialog-send-btn');
+let IsShowedDialog = false;
 
-// 儲存對話訊息的陣列
-let messages = [];
-
-// 顯示對話框
-function showDialogBox() {
-    dialogBox.style.display = 'block';
+function ShowDialog() {
+    dialogBox.style.display = 'flex';
+    IsShowedDialog = true;
 }
 
-// 隱藏對話框
-function hideDialogBox() {
+function HideDialog() {
     dialogBox.style.display = 'none';
+    IsShowedDialog = false;
 }
 
-// 顯示對話訊息
-function renderMessages() {
-    dialogBody.innerHTML = '';
-
-    messages.forEach((message) => {
-        const div = document.createElement('div');
-        div.classList.add('dialog-message');
-        div.textContent = message.text;
-
-        if (message.isSelf) {
-            div.classList.add('dialog-message-self');
-        } else {
-            div.classList.add('dialog-message-other');
-        }
-
-        dialogBody.appendChild(div);
-    });
-
-    // 捲動到最底部
-    dialogBody.scrollTop = dialogBody.scrollHeight;
-}
-
-// 新增對話訊息
-function addMessage(text, isSelf = false) {
-    const message = { text, isSelf };
-    messages.push(message);
-    renderMessages();
-}
-
-// 發送對話訊息
-function sendMessage() {
-    const text = dialogInput.value.trim();
-
-    if (text === '') {
-        return;
+this.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter' && IsShowedDialog) {
+        HideDialog();
     }
-
-    addMessage(text, true);
-    dialogInput.value = '';
-}
-
-// 按下enter鍵發送訊息
-function handleKeyDown(event) {
-    if (event.key === 'Enter') {
-        sendMessage();
+    else if ((e.key === 'Enter' && !IsShowedDialog)) {
+        ShowDialog();
     }
-}
+})
 
-// 按下發送按鈕發送訊息
-dialogSendBtn.addEventListener('click', sendMessage);
+dialogCloseBtn.addEventListener('click', HideDialog);
+dialogInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
 
-// 按下關閉按鈕關閉對話框
-dialogCloseBtn.addEventListener('click', hideDialogBox);
-
-// 按下enter鍵發送訊息
-dialogInput.addEventListener('keydown', handleKeyDown);
-
-function handleKeyDown(event) {
-    if (event.key === 'Enter') {
-        showDialogBox();
     }
-}
+})
